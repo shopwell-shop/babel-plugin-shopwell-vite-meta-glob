@@ -14,6 +14,11 @@ coding agent must read this file before changing files in this repository.
 - Do not merge or cherry-pick unrelated upstream history, copy upstream tags, or force-push.
 - Runtime code and workflows must not depend on `shopware/*`, `shopwarelabs/*`,
   `@shopware-ag/*`, or their GitHub repositories.
+- This package is not released until the exact version is queryable from
+  `registry.npmjs.org`. A Git tag, GitHub Release, or green workflow alone is insufficient.
+- Consumers must use the published semver version. Never commit a Git URL, `github:`,
+  GitHub archive/tarball URL, commit, branch, `file:`, `link:`, or `workspace:` fallback
+  to make installation pass while npm publication is missing.
 - Before commit, push, release, or sync completion, run:
   `../sync-upstream/bin/syncctl audit-license babel-plugin-shopware-vite-meta-glob` and
   `../sync-upstream/bin/syncctl audit-upstream-dependencies babel-plugin-shopware-vite-meta-glob`.
