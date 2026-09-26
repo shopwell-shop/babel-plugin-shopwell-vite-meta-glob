@@ -41,7 +41,9 @@ jobs:
           package_version="$(node -p "require('./package.json').version")"
 
           if [[ "$(npm view "${package_name}@${package_version}" version 2>/dev/null || true)" != "${package_version}" ]]; then
-            npm publish --access public --provenance
+            # Bootstrap publication runs from this credential-host repository, so npm
+            # provenance cannot truthfully identify the checked-out target repository.
+            npm publish --access public
           fi
 
           for attempt in {1..12}; do
