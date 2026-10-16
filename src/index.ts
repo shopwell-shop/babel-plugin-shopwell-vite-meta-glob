@@ -26,17 +26,22 @@ export default function viteMetaGlobBabelPlugin({
         .sort()
         .map(globPath => globPath.replace(/\\/g, '/'))
     } else if (t.isArrayExpression(firstArg)) {
-      // Handle array of string patterns: ["./path1.js", "./path2.js"]
-      const allGlobPaths: string[] = []
+      // Handle array of string patterns: ["./dir/*.js", "!./dir/skip.js"]
+      // Like Vite, a `!` pattern excludes its matches from every other pattern.
+      const patterns: string[] = []
       for (const element of firstArg.elements) {
         if (t.isStringLiteral(element)) {
-          const paths = globSync(element.value, {cwd, dotRelative: true}).map(
-            globPath => globPath.replace(/\\/g, '/'),
-          )
-          allGlobPaths.push(...paths)
+          patterns.push(element.value)
         }
       }
-      return allGlobPaths.sort()
+      const includes = patterns.filter(pattern => !pattern.startsWith('!'))
+      const ignore = patterns
+        .filter(pattern => pattern.startsWith('!'))
+        .map(pattern => pattern.slice(1))
+
+      return globSync(includes, {cwd, dotRelative: true, ignore})
+        .sort()
+        .map(globPath => globPath.replace(/\\/g, '/'))
     }
     return []
   }
